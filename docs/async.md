@@ -470,7 +470,7 @@ function dbFuc(db) { //这里不需要 async
 }
 ```
 
-上面代码可能不会正常工作，原因是这时三个`db.post`操作将是并发执行，也就是同时执行，而不是继发执行。正确的写法是采用`for`循环。
+上面代码可能不会正常工作，原因是这时三个`db.post()`操作将是并发执行，也就是同时执行，而不是继发执行。正确的写法是采用`for`循环。
 
 ```javascript
 async function dbFuc(db) {
@@ -482,7 +482,7 @@ async function dbFuc(db) {
 }
 ```
 
-另一种方法是使用数组的`reduce`方法。
+另一种方法是使用数组的`reduce()`方法。
 
 ```javascript
 async function dbFuc(db) {
@@ -495,7 +495,9 @@ async function dbFuc(db) {
 }
 ```
 
-上面例子中，`reduce`方法的第一个参数是`async`函数，导致该函数的第一个参数是前一步操作返回的 Promise 对象，所以必须使用`await`等待它操作结束。另外，`reduce`方法返回的是`docs`数组最后一个成员的`async`函数的执行结果，也是一个 Promise 对象，导致在它前面也必须加上`await`。
+上面例子中，`reduce()`方法的第一个参数是`async`函数，导致该函数的第一个参数是前一步操作返回的 Promise 对象，所以必须使用`await`等待它操作结束。另外，`reduce()`方法返回的是`docs`数组最后一个成员的`async`函数的执行结果，也是一个 Promise 对象，导致在它前面也必须加上`await`。
+
+上面的`reduce()`的参数函数里面没有`return`语句，原因是这个函数的主要目的是`db.post()`操作，不是返回值。而且`async`函数不管有没有`return`语句，总是返回一个 Promise 对象，所以这里的`return`是不必要的。
 
 如果确实希望多个请求并发执行，可以使用`Promise.all`方法。当三个请求都会`resolved`时，下面两种写法效果相同。
 
@@ -752,7 +754,7 @@ export { output };
 ```javascript
 // awaiting.js
 let output;
-(async function1 main() {
+(async function main() {
   const dynamic = await import(someMission);
   const data = await fetch(url);
   output = someProcess(dynamic.default, data);
